@@ -43,8 +43,22 @@ end
 bad_links = []
 link_count = 0
 
+class Page
+  def initialize(pdf_page)
+    @pdf_page = pdf_page
+  end
+
+  def links
+    links_on_page(pdf_page)
+  end
+
+  private
+
+  attr_reader :pdf_page
+end
+
 doc.pages.each do |page|
-  links = links_on_page(page)
+  links = Page.new(page).links
 
   next unless links.any?
 
