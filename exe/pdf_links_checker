@@ -1,3 +1,70 @@
 #!/usr/bin/env ruby
 
 require "pdf_links_checker"
+require 'pdf-reader'
+require "net/http"
+
+file_name = ARGV[0]
+file_path = "#{Dir.pwd}/#{file_name}"
+
+path = File.expand_path(file_path)
+doc = PDF::Reader.new(path)
+$objects = doc.objects
+
+def is_link?(object)
+  object[:Type] == :Annot && [:Link].include?(object[:Subtype])
+end
+
+def is_note?(object)
+  object[:Type] == :Annot && [:Text, :FreeText].include?(object[:Subtype])
+end
+
+def annots_on_page(page)
+  references = (page.attributes[:Annots] || [])
+  lookup_all(references).flatten
+end
+
+def lookup_all(refs)
+  refs = *refs
+  refs.map { |ref| lookup(ref) }
+end
+
+def lookup(ref)
+  object = $objects[ref]
+  return object unless object.is_a?(Array)
+  lookup_all(object)
+end
+
+def links_on_page(page)
+  all_annots = annots_on_page(page)
+  all_annots.select { |a| is_link?(a) }
+end
+
+bad_links = []
+link_count = 0
+
+doc.pages.each do |page|
+  links = links_on_page(page)
+
+  next unless links.any?
+
+  links.each do |link|
+    link_count += 1
+
+    uri = link[:A][:URI]
+    url = URI.parse(uri)
+    req = Net::HTTP.new(url.host, url.port)
+    req.use_ssl = true if uri.include?('https')
+
+    begin
+      res = req.request_head(url.path)
+      bad_links.push(link) if res.code == "404"
+    rescue => e
+      bad_links.push(link)
+    end
+  end
+end
+
+working_links = link_count - bad_links.count
+puts "Working links: #{working_links} of #{link_count}"
+bad_links.each { |bad_link| puts bad_link[:A][:URI]}
