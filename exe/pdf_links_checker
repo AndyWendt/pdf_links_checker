@@ -62,6 +62,20 @@ class URL
     @pdf_link = pdf_link
   end
 
+  def invalid?
+    uri = to_s
+    url = URI.parse(uri)
+    req = Net::HTTP.new(url.host, url.port)
+    req.use_ssl = true if uri.include?('https')
+
+    begin
+      res = req.request_head(url.path)
+      true if res.code == "404"
+    rescue => e
+      true
+    end
+  end
+
   def to_s
     pdf_link[:A][:URI]
   end
@@ -78,21 +92,11 @@ doc.pages.each do |page|
 
   links.each do |link|
     link_count += 1
-
-    uri = URL.new(link).to_s
-    url = URI.parse(uri)
-    req = Net::HTTP.new(url.host, url.port)
-    req.use_ssl = true if uri.include?('https')
-
-    begin
-      res = req.request_head(url.path)
-      bad_links.push(link) if res.code == "404"
-    rescue => e
-      bad_links.push(link)
-    end
+    uri = URL.new(link)
+    bad_links.push(uri) if uri.invalid?
   end
 end
 
 working_links = link_count - bad_links.count
 puts "Working links: #{working_links} of #{link_count}"
-bad_links.each { |bad_link| puts bad_link[:A][:URI]}
+bad_links.each { |bad_link| puts bad_link}
