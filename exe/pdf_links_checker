@@ -57,6 +57,20 @@ class Page
   attr_reader :pdf_page
 end
 
+class URL
+  def initialize(pdf_link)
+    @pdf_link = pdf_link
+  end
+
+  def to_s
+    pdf_link[:A][:URI]
+  end
+
+  private
+
+  attr_reader :pdf_link
+end
+
 doc.pages.each do |page|
   links = Page.new(page).links
 
@@ -65,7 +79,7 @@ doc.pages.each do |page|
   links.each do |link|
     link_count += 1
 
-    uri = link[:A][:URI]
+    uri = URL.new(link).to_s
     url = URI.parse(uri)
     req = Net::HTTP.new(url.host, url.port)
     req.use_ssl = true if uri.include?('https')
