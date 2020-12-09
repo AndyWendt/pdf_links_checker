@@ -99,9 +99,7 @@ class PdfDocument
   end
 
   def links
-    links = []
-    pages.each { |page| links.concat(page.links) }
-    links
+    pages.reduce([]) { |links, page| links.concat(page.links) }
   end
 
   private
