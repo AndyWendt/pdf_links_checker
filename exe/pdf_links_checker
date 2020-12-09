@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "pdf_links_checker"
+require "pdf_links_checker/pdf_document"
 require "pdf-reader"
 require "net/http"
 
@@ -111,25 +112,7 @@ class Links
   attr_reader :urls
 end
 
-class PdfDocument
-  def initialize(pdf_doc)
-    @pdf_doc = pdf_doc
-  end
-
-  def links
-    pages.reduce([]) { |links, page| links.concat(page.links) }.then { |links| Links.new(links) }
-  end
-
-  private
-
-  def pages
-    pdf_doc.pages.map { |page| Page.new(page, Annotations.new(pdf_doc)) }
-  end
-
-  attr_reader :pdf_doc
-end
-
-links = PdfDocument.new(doc).links
+links = PdfLinksChecker::PdfDocument.new(doc).links
 
 puts "Working links: #{links.valid_count} of #{links.total_count}"
 links.invalid.each { |bad_link| puts bad_link }
