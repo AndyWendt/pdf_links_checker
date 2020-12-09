@@ -32,10 +32,6 @@ class Annotations
     lookup_all(object)
   end
 
-  def is_link?(object)
-    object[:Type] == :Annot && [:Link].include?(object[:Subtype])
-  end
-
   private
 
   attr_reader :objects
@@ -56,7 +52,11 @@ class Page
 
   def find_links
     references = (pdf_page.attributes[:Annots] || [])
-    annotations.find(references).flatten
+    annotations.find(references).flatten.select{ |object| link?(object) }
+  end
+
+  def link?(object)
+    object[:Type] == :Annot && [:Link].include?(object[:Subtype])
   end
 
   attr_reader :pdf_page, :annotations
