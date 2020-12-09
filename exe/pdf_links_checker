@@ -42,9 +42,6 @@ def links_on_page(page)
   all_annots.select { |a| is_link?(a) }
 end
 
-bad_links = []
-link_count = 0
-
 class Page
   def initialize(pdf_page)
     @pdf_page = pdf_page
