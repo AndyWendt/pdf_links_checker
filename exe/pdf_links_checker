@@ -36,10 +36,6 @@ class Annotations
     object[:Type] == :Annot && [:Link].include?(object[:Subtype])
   end
 
-  def is_note?(object)
-    object[:Type] == :Annot && %i[Text FreeText].include?(object[:Subtype])
-  end
-
   private
 
   attr_reader :objects
