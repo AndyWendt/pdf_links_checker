@@ -1,3 +1,7 @@
+require "pdf_links_checker/annotations"
+require "pdf_links_checker/links"
+require "pdf_links_checker/page"
+
 module PdfLinksChecker
   class PdfDocument
     def initialize(pdf_doc)
