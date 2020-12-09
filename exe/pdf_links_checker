@@ -98,25 +98,25 @@ class PdfDocument
     @pdf_doc = pdf_doc
   end
 
-  def pages
-    pdf_doc.pages.map { |page| Page.new(page) }
+  def links
+    links = []
+    pages.each { |page| links.concat(page.links) }
+    links
   end
 
   private
 
+  def pages
+    pdf_doc.pages.map { |page| Page.new(page) }
+  end
+
   attr_reader :pdf_doc
 end
 
-PdfDocument.new(doc).pages.each do |page|
-  links = page.links
-
-  next unless links.any?
-
-  links.each do |link|
-    link_count += 1
-    uri = URL.new(link)
-    bad_links.push(uri) if uri.invalid?
-  end
+PdfDocument.new(doc).links.each do |link|
+  link_count += 1
+  uri = URL.new(link)
+  bad_links.push(uri) if uri.invalid?
 end
 
 working_links = link_count - bad_links.count
