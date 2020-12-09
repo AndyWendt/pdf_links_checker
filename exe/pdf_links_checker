@@ -37,10 +37,6 @@ def lookup(ref)
   lookup_all(object)
 end
 
-def links_on_page(page)
-  all_annots = annots_on_page(page)
-  all_annots.select { |a| is_link?(a) }
-end
 
 class Page
   def initialize(pdf_page)
@@ -48,10 +44,15 @@ class Page
   end
 
   def links
-    links_on_page(pdf_page)
+    links_on_page
   end
 
   private
+
+  def links_on_page
+    all_annots = annots_on_page(pdf_page)
+    all_annots.select { |a| is_link?(a) }
+  end
 
   attr_reader :pdf_page
 end
