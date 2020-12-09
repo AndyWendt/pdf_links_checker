@@ -20,11 +20,6 @@ def is_note?(object)
   object[:Type] == :Annot && %i[Text FreeText].include?(object[:Subtype])
 end
 
-def annots_on_page(page)
-  references = (page.attributes[:Annots] || [])
-  lookup_all(references).flatten
-end
-
 def lookup_all(refs)
   refs = *refs
   refs.map { |ref| lookup(ref) }
@@ -44,14 +39,18 @@ class Page
   end
 
   def links
-    links_on_page
+    find_links
   end
 
   private
 
-  def links_on_page
-    all_annots = annots_on_page(pdf_page)
-    all_annots.select { |a| is_link?(a) }
+  def find_links
+    annotations.select { |a| is_link?(a) }
+  end
+
+  def annotations
+    references = (pdf_page.attributes[:Annots] || [])
+    lookup_all(references).flatten
   end
 
   attr_reader :pdf_page
