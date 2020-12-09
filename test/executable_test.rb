@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-describe 'pdf link checker' do
+describe "pdf link checker" do
   it "checks pdf links" do
     path = File.expand_path("exe/pdf_links_checker")
     output = `bundle exec #{path} test/test.pdf`

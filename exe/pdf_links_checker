@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require "pdf_links_checker"
-require 'pdf-reader'
+require "pdf-reader"
 require "net/http"
 
 file_name = ARGV[0]
@@ -16,7 +17,7 @@ def is_link?(object)
 end
 
 def is_note?(object)
-  object[:Type] == :Annot && [:Text, :FreeText].include?(object[:Subtype])
+  object[:Type] == :Annot && %i[Text FreeText].include?(object[:Subtype])
 end
 
 def annots_on_page(page)
@@ -32,6 +33,7 @@ end
 def lookup(ref)
   object = $objects[ref]
   return object unless object.is_a?(Array)
+
   lookup_all(object)
 end
 
@@ -66,12 +68,12 @@ class URL
     uri = to_s
     url = URI.parse(uri)
     req = Net::HTTP.new(url.host, url.port)
-    req.use_ssl = true if uri.include?('https')
+    req.use_ssl = true if uri.include?("https")
 
     begin
       res = req.request_head(url.path)
       true if res.code == "404"
-    rescue => e
+    rescue StandardError => e
       true
     end
   end
@@ -83,6 +85,12 @@ class URL
   private
 
   attr_reader :pdf_link
+end
+
+class Links
+  def initialize
+    @count = 0
+  end
 end
 
 doc.pages.each do |page|
@@ -99,4 +107,4 @@ end
 
 working_links = link_count - bad_links.count
 puts "Working links: #{working_links} of #{link_count}"
-bad_links.each { |bad_link| puts bad_link}
+bad_links.each { |bad_link| puts bad_link }
