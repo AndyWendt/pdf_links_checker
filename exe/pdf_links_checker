@@ -95,8 +95,12 @@ class Links
     @invalid = @urls.select { |url| url.invalid? }
   end
 
-  def count
+  def total_count
     urls.count
+  end
+
+  def valid_count
+    total_count - invalid.count
   end
 
   private
@@ -124,6 +128,5 @@ end
 
 links = PdfDocument.new(doc).links
 
-working_links = links.count - links.invalid.count
-puts "Working links: #{working_links} of #{links.count}"
+puts "Working links: #{links.valid_count} of #{links.total_count}"
 links.invalid.each { |bad_link| puts bad_link }
