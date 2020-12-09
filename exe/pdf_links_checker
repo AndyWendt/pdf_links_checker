@@ -93,8 +93,22 @@ class Links
   end
 end
 
-doc.pages.each do |page|
-  links = Page.new(page).links
+class PdfDocument
+  def initialize(pdf_doc)
+    @pdf_doc = pdf_doc
+  end
+
+  def pages
+    pdf_doc.pages.map { |page| Page.new(page) }
+  end
+
+  private
+
+  attr_reader :pdf_doc
+end
+
+PdfDocument.new(doc).pages.each do |page|
+  links = page.links
 
   next unless links.any?
 
