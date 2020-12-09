@@ -88,9 +88,20 @@ class URL
 end
 
 class Links
-  def initialize
-    @count = 0
+  attr_reader :invalid
+
+  def initialize(links_array)
+    @urls= links_array.map { |link| URL.new(link) }
+    @invalid = @urls.select { |url| url.invalid? }
   end
+
+  def count
+    urls.count
+  end
+
+  private
+
+  attr_reader :urls
 end
 
 class PdfDocument
@@ -99,7 +110,8 @@ class PdfDocument
   end
 
   def links
-    pages.reduce([]) { |links, page| links.concat(page.links) }
+    links = pages.reduce([]) { |links, page| links.concat(page.links) }
+    Links.new(links)
   end
 
   private
@@ -111,12 +123,8 @@ class PdfDocument
   attr_reader :pdf_doc
 end
 
-PdfDocument.new(doc).links.each do |link|
-  link_count += 1
-  uri = URL.new(link)
-  bad_links.push(uri) if uri.invalid?
-end
+links = PdfDocument.new(doc).links
 
-working_links = link_count - bad_links.count
-puts "Working links: #{working_links} of #{link_count}"
-bad_links.each { |bad_link| puts bad_link }
+working_links = links.count - links.invalid.count
+puts "Working links: #{working_links} of #{links.count}"
+links.invalid.each { |bad_link| puts bad_link }
