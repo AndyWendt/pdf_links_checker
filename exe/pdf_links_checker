@@ -12,30 +12,38 @@ path = File.expand_path(file_path)
 doc = PDF::Reader.new(path)
 $objects = doc.objects
 
-def is_link?(object)
-  object[:Type] == :Annot && [:Link].include?(object[:Subtype])
-end
+class Annotations
 
-def is_note?(object)
-  object[:Type] == :Annot && %i[Text FreeText].include?(object[:Subtype])
-end
+  def find(references)
+    lookup_all(references)
+  end
 
-def lookup_all(refs)
-  refs = *refs
-  refs.map { |ref| lookup(ref) }
-end
+  def lookup_all(refs)
+    refs = *refs
+    refs.map { |ref| lookup(ref) }
+  end
 
-def lookup(ref)
-  object = $objects[ref]
-  return object unless object.is_a?(Array)
+  def lookup(ref)
+    object = $objects[ref]
+    return object unless object.is_a?(Array)
 
-  lookup_all(object)
+    lookup_all(object)
+  end
+
+  def is_link?(object)
+    object[:Type] == :Annot && [:Link].include?(object[:Subtype])
+  end
+
+  def is_note?(object)
+    object[:Type] == :Annot && %i[Text FreeText].include?(object[:Subtype])
+  end
 end
 
 
 class Page
-  def initialize(pdf_page)
+  def initialize(pdf_page, annotations)
     @pdf_page = pdf_page
+    @annotations = annotations
   end
 
   def links
@@ -45,15 +53,11 @@ class Page
   private
 
   def find_links
-    annotations.select { |a| is_link?(a) }
-  end
-
-  def annotations
     references = (pdf_page.attributes[:Annots] || [])
-    lookup_all(references).flatten
+    annotations.find(references).flatten
   end
 
-  attr_reader :pdf_page
+  attr_reader :pdf_page, :annotations
 end
 
 class URL
@@ -117,7 +121,7 @@ class PdfDocument
   private
 
   def pages
-    pdf_doc.pages.map { |page| Page.new(page) }
+    pdf_doc.pages.map { |page| Page.new(page, Annotations.new) }
   end
 
   attr_reader :pdf_doc
