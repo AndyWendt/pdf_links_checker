@@ -15,4 +15,4 @@ doc = PDF::Reader.new(path)
 links = PdfLinksChecker::PdfDocument.new(doc).links
 
 puts "Working links: #{links.valid_count} of #{links.total_count}"
-links.invalid.each { |bad_link| puts bad_link }
+links.invalid.each { |invalid_link| puts invalid_link }
