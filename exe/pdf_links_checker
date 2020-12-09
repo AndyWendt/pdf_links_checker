@@ -10,9 +10,11 @@ file_path = "#{Dir.pwd}/#{file_name}"
 
 path = File.expand_path(file_path)
 doc = PDF::Reader.new(path)
-$objects = doc.objects
 
 class Annotations
+  def initialize(pdf_doc)
+    @objects = pdf_doc.objects
+  end
 
   def find(references)
     lookup_all(references)
@@ -24,7 +26,7 @@ class Annotations
   end
 
   def lookup(ref)
-    object = $objects[ref]
+    object = objects[ref]
     return object unless object.is_a?(Array)
 
     lookup_all(object)
@@ -37,6 +39,10 @@ class Annotations
   def is_note?(object)
     object[:Type] == :Annot && %i[Text FreeText].include?(object[:Subtype])
   end
+
+  private
+
+  attr_reader :objects
 end
 
 
@@ -121,7 +127,7 @@ class PdfDocument
   private
 
   def pages
-    pdf_doc.pages.map { |page| Page.new(page, Annotations.new) }
+    pdf_doc.pages.map { |page| Page.new(page, Annotations.new(pdf_doc)) }
   end
 
   attr_reader :pdf_doc
