@@ -6,18 +6,6 @@ A utility to ensure that links in PDFs are reachable
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'pdf_links_checker'
-```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
     $ gem install pdf_links_checker
 
 ## Usage
