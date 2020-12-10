@@ -9,7 +9,9 @@ module PdfLinksChecker
     end
 
     def links
-      pages.reduce([]) { |links, page| links.concat(page.links) }.then { |links| Links.new(links) }
+      pages
+        .reduce([]) { |links, page| links.concat(page.links) }
+        .then { |links| Links.new(links) }
     end
 
     private
