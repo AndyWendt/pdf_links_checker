@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/AndyWendt/pdf_links_checker.svg?branch=master)](https://travis-ci.org/AndyWendt/pdf_links_checker)
 
-TODO: describe
+A utility to ensure that links in PDFs are reachable
 
 ## Installation
 
@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+`pdf_links_checker path/to/file.pdf`
 
 ## Development
 
@@ -32,7 +32,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pdf_links_checker.
+Bug reports and pull requests are welcome on GitHub at https://github.com/andywendt/pdf_links_checker.
 
 
 ## License
