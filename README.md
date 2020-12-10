@@ -1,4 +1,4 @@
-# PdfLinksChecker
+# PDF Links Checker
 
 [![Build Status](https://travis-ci.org/AndyWendt/pdf_links_checker.svg?branch=master)](https://travis-ci.org/AndyWendt/pdf_links_checker)
 
