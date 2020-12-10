@@ -7,3 +7,4 @@
 /spec/reports/
 /tmp/
 Gemfile.lock
+pdf_links_checker-*.gem
