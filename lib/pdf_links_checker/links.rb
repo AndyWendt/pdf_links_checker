@@ -5,7 +5,7 @@ module PdfLinksChecker
     attr_reader :invalid
 
     def initialize(links_array)
-      @urls= links_array.map { |link| URL.new(link) }
+      @urls= links_array.map { |link| PdfLinksChecker::URL.new(link) }
       @invalid = @urls.select { |url| url.invalid? }
     end
 
