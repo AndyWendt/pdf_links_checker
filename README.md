@@ -10,7 +10,10 @@ A utility to ensure that links in PDFs are reachable
 
 ## Usage
 
-`pdf_links_checker path/to/file.pdf`
+    $ pdf_links_checker path/to/file.pdf`
+    Working links: 1 of 2
+    https://not-a-chance-that-this-is-a-working-link.com/
+
 
 ## Development
 
