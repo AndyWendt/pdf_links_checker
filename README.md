@@ -18,8 +18,9 @@ Commandline:
 
 Code: 
 
+    file_name = "foo.pdf"
     file_path = "#{Dir.pwd}/#{file_name}"
-    links =  PdfLinksChecker::PdfDocument.from(file_path).links
+    links = PdfLinksChecker::PdfDocument.from(file_path).links
 
 
 ## Development
