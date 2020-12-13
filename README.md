@@ -10,9 +10,16 @@ A utility to ensure that links in PDFs are reachable
 
 ## Usage
 
+Commandline: 
+
     $ pdf_links_checker path/to/file.pdf`
     Working links: 1 of 2
     https://not-a-chance-that-this-is-a-working-link.com/
+
+Code: 
+
+    file_path = "#{Dir.pwd}/#{file_name}"
+    links =  PdfLinksChecker::PdfDocument.from(file_path).links
 
 
 ## Development

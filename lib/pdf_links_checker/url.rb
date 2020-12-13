@@ -1,5 +1,6 @@
 require "pdf_links_checker/invalid_link"
 require "uri"
+require "net/http"
 
 module PdfLinksChecker
   class URL
