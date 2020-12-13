@@ -21,6 +21,8 @@ Code:
     file_name = "foo.pdf"
     file_path = "#{Dir.pwd}/#{file_name}"
     links = PdfLinksChecker::PdfDocument.from(file_path).links
+    puts "Working links: #{links.valid_count} of #{links.total_count}"
+    links.invalid.each { |invalid_link| puts invalid_link }
 
 
 ## Development
